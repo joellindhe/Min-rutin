@@ -1,0 +1,164 @@
+.install-prompt {
+  position: fixed;
+  bottom: 80px;
+  left: 16px;
+  right: 16px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 9999;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.install-prompt-content {
+  padding: 16px;
+}
+
+.install-prompt-content p {
+  margin: 0 0 12px 0;
+  font-size: 16px;
+  color: #333;
+  text-align: center;
+}
+
+.install-prompt-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-install,
+.btn-dismiss {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-install {
+  background: #4CAF50;
+  color: white;
+}
+
+.btn-install:hover {
+  background: #45a049;
+}
+
+.btn-dismiss {
+  background: #f0f0f0;
+  color: #666;
+}
+
+.btn-dismiss:hover {
+  background: #e0e0e0;
+}
+
+.install-instructions-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: 16px;
+}
+
+.install-instructions {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 400px;
+  width: 100%;
+  position: relative;
+  animation: scaleIn 0.3s ease;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.btn-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  color: #999;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+.install-instructions h2 {
+  margin: 0 0 16px 0;
+  font-size: 22px;
+  color: #333;
+}
+
+.install-instructions ol {
+  margin: 0 0 16px 0;
+  padding-left: 20px;
+}
+
+.install-step-header {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  margin-top: 14px;
+  margin-bottom: 8px;
+}
+
+.install-instructions li {
+  margin-bottom: 12px;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #555;
+}
+
+.install-note {
+  font-size: 14px;
+  color: #666;
+  text-align: center;
+  margin: 16px 0;
+}
+
+.btn-got-it {
+  width: 100%;
+  padding: 14px;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.btn-got-it:hover {
+  background: #45a049;
+}

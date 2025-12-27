@@ -10,6 +10,7 @@ import {
 } from "./routine";
 import RoutineView from "./components/RoutineView";
 import SettingsView from "./components/SettingsView";
+import InstallPrompt from "./components/InstallPrompt";
 import { preloadAllSVGs } from "./svgCache";
 import "./App.css";
 
@@ -297,6 +298,7 @@ export default function App() {
           </p>
         </a>
       )}
+      <InstallPrompt />
     </div>
   );
 }
