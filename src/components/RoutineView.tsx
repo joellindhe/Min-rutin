@@ -27,6 +27,7 @@ export default function RoutineView({
   onBack,
   onEnterSettings,
 }: RoutineViewProps) {
+  const [localRoutine, setLocalRoutine] = useState(routine);
   const [paused, setPaused] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
   const [showAdultDialog, setShowAdultDialog] = useState(false);
@@ -36,15 +37,14 @@ export default function RoutineView({
   const timerRef = useRef<number | null>(null);
   const pressStartTime = useRef<number>(0);
 
-  // Log when routine changes (e.g., from settings update)
+  // Sync prop routine to local routine ONLY when routine.id changes (i.e., switching to a different routine)
+  // Do NOT sync on every prop change, or it will revert local state changes
   useEffect(() => {
-    console.log("📋 RoutineView received updated routine:", {
-      title: routine.title,
-      steps: routine.steps.map(s => ({ id: s.id, title: s.title, minutes: s.remainingSeconds / 60, iconName: s.iconName }))
-    });
+    console.log("📋 RoutineView loaded routine:", routine.title);
+    setLocalRoutine(routine);
     setTotalSeconds(routine.steps.reduce((sum, s) => sum + s.remainingSeconds, 0));
-    setShowConfetti(false); // Always reset confetti when routine opens
-    setPaused(false); // Unpause
+    setShowConfetti(false);
+    setPaused(false);
   }, [routine.id]);
 
   const colorMap: { [key: string]: string } = {
@@ -56,13 +56,14 @@ export default function RoutineView({
   // Timer loop - only runs if at least one step is Running
   useEffect(() => {
     // Check if any step is running
-    const hasRunningStep = routine.steps.some(s => s.status === StepStatus.Running);
+    const hasRunningStep = localRoutine.steps.some(s => s.status === StepStatus.Running);
     
     if (paused || !hasRunningStep) return;
 
     const interval = setInterval(() => {
-      setTotalSeconds((_prev) => {
-        let updated = { ...routine };
+      // Always use the most current localRoutine state via setter function
+      setLocalRoutine((currentRoutine) => {
+        let updated = { ...currentRoutine };
         let allDone = true;
         let changed = false;
 
@@ -84,13 +85,8 @@ export default function RoutineView({
         });
 
         if (changed) {
-          onUpdateRoutine(updated);
+          setTotalSeconds(updated.steps.reduce((sum, s) => sum + s.remainingSeconds, 0));
         }
-
-        const newTotal = updated.steps.reduce(
-          (sum, s) => sum + s.remainingSeconds,
-          0
-        );
 
         // Only show confetti if ALL steps are done
         if (allDone && !paused) {
@@ -99,27 +95,29 @@ export default function RoutineView({
           setPaused(true);
         }
 
-        return newTotal;
+        return updated;
       });
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [routine, paused, onUpdateRoutine]);
+  }, [localRoutine, paused]);
 
   const handleStartStep = useCallback(
     (stepId: string) => {
-      const updated = setStepStatus(routine, stepId, StepStatus.Running);
+      const updated = setStepStatus(localRoutine, stepId, StepStatus.Running);
+      setLocalRoutine(updated);
       onUpdateRoutine(updated);
     },
-    [routine, onUpdateRoutine]
+    [localRoutine, onUpdateRoutine]
   );
 
   const handleCompleteStep = useCallback(
     (stepId: string) => {
-      const updated = setStepStatus(routine, stepId, StepStatus.Done);
+      const updated = setStepStatus(localRoutine, stepId, StepStatus.Done);
+      setLocalRoutine(updated);
       onUpdateRoutine(updated);
     },
-    [routine, onUpdateRoutine]
+    [localRoutine, onUpdateRoutine]
   );
 
   // Long press timer effect - removed, no longer needed with PointerEvents
@@ -160,13 +158,15 @@ export default function RoutineView({
 
   const handleReset = () => {
     const reset = {
-      ...routine,
-      steps: routine.steps.map((s) => ({
+      ...localRoutine,
+      steps: localRoutine.steps.map((s) => ({
         ...s,
         status: StepStatus.Todo,
         remainingSeconds: s.minutes * 60,
       })),
     };
+    setLocalRoutine(reset);
+    setTotalSeconds(reset.steps.reduce((sum, s) => sum + s.remainingSeconds, 0));
     onUpdateRoutine(reset);
     setShowConfetti(false);
     setPaused(false);
@@ -185,8 +185,8 @@ export default function RoutineView({
     }
   }, [showConfetti, onBack]);
 
-  const todoSteps = routine.steps.filter((s) => s.status !== StepStatus.Done);
-  const doneSteps = routine.steps.filter((s) => s.status === StepStatus.Done);
+  const todoSteps = localRoutine.steps.filter((s) => s.status !== StepStatus.Done);
+  const doneSteps = localRoutine.steps.filter((s) => s.status === StepStatus.Done);
 
   return (
     <div className="routine-view">
@@ -256,15 +256,16 @@ export default function RoutineView({
         <button
           className="btn btn-pause"
           onClick={() => setPaused(!paused)}
+          title="Pausa eller återuppta rutinen"
         >
           {paused ? "Fortsätt" : "Pausa"}
         </button>
-        <button 
-          className="btn btn-reset" 
+        <button
+          className="btn btn-reset"
           onClick={handleReset}
-          style={{ pointerEvents: 'auto' }}
+          title="Återställ alla steg till början"
         >
-          Återställ
+          Nollställ
         </button>
       </div>
 

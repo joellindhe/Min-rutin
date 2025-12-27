@@ -64,13 +64,14 @@
 }
 
 .time-ring-wrapper {
-  position: absolute;
-  right: 0;
-  top: 0;
+  position: fixed;
+  right: 16px;
+  top: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  z-index: 100;
 }
 
 .routine-main {
@@ -212,42 +213,52 @@
 
 .routine-controls {
   position: absolute;
-  top: 155px;
+  top: 160px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 16px;
-  justify-content: center;
+  gap: 12px;
   z-index: 1001;
   pointer-events: auto;
+  flex-wrap: nowrap;
+  width: fit-content;
 }
 
 .btn {
-  font-size: 20px;
-  padding: 16px 32px;
+  font-size: 16px;
+  padding: 12px 24px;
   border: none;
-  border-radius: 16px;
+  border-radius: 12px;
   cursor: pointer;
   font-weight: 600;
-  transition: all 0.2s;
+  transition: background-color 0.2s, box-shadow 0.2s;
+  flex: 0 0 auto;
+  width: auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn:active {
+  box-shadow: 0 0 0px rgba(0, 0, 0, 0.15);
 }
 
 .btn-pause {
-  background-color: #cde8d8;
-  color: #333;
+  background-color: #a7d7a9;
+  color: #fff;
+  font-weight: 700;
 }
 
 .btn-pause:hover {
-  background-color: #b5dcc6;
+  background-color: #96cfa0;
 }
 
 .btn-reset {
-  background-color: #ddeafb;
-  color: #333;
+  background-color: #87ceeb;
+  color: #fff;
+  font-weight: 700;
 }
 
 .btn-reset:hover {
-  background-color: #cfe0f5;
+  background-color: #6fb8d4;
 }
 
 .routine-logo {

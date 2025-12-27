@@ -99,7 +99,6 @@ export default function App() {
   };
 
   const handleUpdateRoutine = (updated: UserRoutine) => {
-    setState({ ...state, routine: updated });
     if (activeChild) {
       const updatedRoutines = activeChild.routines.map((r) =>
         r.id === updated.id ? updated : r
@@ -111,11 +110,15 @@ export default function App() {
       const updatedChildren = state.children.map((c) =>
         c.id === activeChild.id ? updatedChild : c
       );
-      setState({
-        ...state,
-        children: updatedChildren,
-        routine: updated,
-      });
+      setTimeout(() => {
+        setState((prevState) => {
+          return {
+            ...prevState,
+            children: updatedChildren,
+            routine: updated,
+          };
+        });
+      }, 0);
     }
   };
 
