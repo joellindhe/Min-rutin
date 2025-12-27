@@ -159,7 +159,6 @@ export default function RoutineView({
   };
 
   const handleReset = () => {
-    console.log("🔄 Återställ-knapp klickad!");
     const reset = {
       ...routine,
       steps: routine.steps.map((s) => ({
@@ -168,7 +167,6 @@ export default function RoutineView({
         remainingSeconds: s.minutes * 60,
       })),
     };
-    console.log("🔄 Återställer steg till Todo:", reset.steps.map(s => ({ title: s.title, status: s.status })));
     onUpdateRoutine(reset);
     setShowConfetti(false);
     setPaused(false);
